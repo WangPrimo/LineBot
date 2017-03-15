@@ -36,7 +36,16 @@ public class Oripyon_jr {
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         System.out.println("event: " + event);
-        return new TextMessage(event.getMessage().getText() + "From Oripyon jr");
+        
+        String message = event.getMessage().getText();
+        
+        if(message.contains("陳彥霖")){
+        	message = "廢物";
+        }else{
+        	message = null;
+        }
+        
+        return new TextMessage(message);
     }
 
     @EventMapping
