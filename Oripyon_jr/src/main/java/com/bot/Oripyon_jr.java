@@ -16,6 +16,8 @@
 
 package com.bot;
 
+import java.util.Random;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -29,6 +31,11 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
+	
+	int seed;
+	Random random = new Random();
+	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男"};
+	
     public static void main(String[] args) {
         SpringApplication.run(Oripyon_jr.class, args);
     }
@@ -40,7 +47,8 @@ public class Oripyon_jr {
         String message = event.getMessage().getText();
         
         if(message.contains("陳彥霖")){
-        	message = "廢物";
+        	seed = random.nextInt(noodle.length);
+        	message = noodle[seed];//"廢物";
         }else{
         	message = null;
         }
