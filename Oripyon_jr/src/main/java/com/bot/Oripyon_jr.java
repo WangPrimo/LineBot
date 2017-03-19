@@ -34,7 +34,7 @@ public class Oripyon_jr {
 	
 	int seed;
 	Random random = new Random();
-	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","ㄧ"};
+	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","頂新"};
 	
     public static void main(String[] args) {
         SpringApplication.run(Oripyon_jr.class, args);
