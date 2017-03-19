@@ -16,11 +16,11 @@
 
 package com.bot;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Random;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.bot.chatService.GeneralService;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -31,9 +31,10 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
-	@Autowired
-	private GeneralService generalService;
 	
+	int seed;
+	Random random = new Random();
+	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","ㄧ"};
 	
     public static void main(String[] args) {
         SpringApplication.run(Oripyon_jr.class, args);
@@ -43,7 +44,14 @@ public class Oripyon_jr {
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         System.out.println("event: " + event);
         
-        String message = generalService.messageProcess(event);
+        String message = event.getMessage().getText();
+        
+        if(message.contains("陳彥霖")){
+        	seed = random.nextInt(noodle.length);
+        	message = noodle[seed];//"廢物";
+        }else{
+        	message = null;
+        }
         
         return new TextMessage(message);
     }
