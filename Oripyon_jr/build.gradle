@@ -16,6 +16,17 @@
 
 apply plugin: 'org.springframework.boot'
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'config'
+        }
+    }
+}
+
 dependencies {
     compile project(':line-bot-spring-boot')
 }

@@ -53,18 +53,18 @@ public class Oripyon_jr {
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         System.out.println("event: " + event);
         
-        jsonParser();
+//        jsonParser();
         
         String message = event.getMessage().getText();
         String returnMessage = null;
         
-        if(message.startsWith("!")){
-        	String key = message.split(" ")[0].substring(1);
-        	String target = message.substring(key.length() + 1);
-        	if(binaryCommand.get(key) != null){
-        		returnMessage = binaryCommand.get(key);
-        	}
-        }
+//        if(message.startsWith("!")){
+//        	String key = message.split(" ")[0].substring(1);
+//        	String target = message.substring(key.length() + 1);
+//        	if(binaryCommand.get(key) != null){
+//        		returnMessage = binaryCommand.get(key);
+//        	}
+//        }
         
         if(message.contains("陳彥霖")){
         	seed = random.nextInt(noodle.length);
@@ -79,19 +79,19 @@ public class Oripyon_jr {
         System.out.println("event: " + event);
     }
     
-    private void jsonParser(){
-    	try {
-    		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String,String>>(){};
-        	ObjectMapper mapper = new ObjectMapper();
-    		
-			binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),typeRef);
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
+//    private void jsonParser(){
+//    	try {
+//    		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String,String>>(){};
+//        	ObjectMapper mapper = new ObjectMapper();
+//    		
+//			binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),typeRef);
+//			
+//		} catch (JsonParseException e) {
+//			e.printStackTrace();
+//		} catch (JsonMappingException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//    }
 }
