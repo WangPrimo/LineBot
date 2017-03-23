@@ -19,7 +19,7 @@ package com.bot;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -30,7 +30,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.linecorp.bot.client.LineMessagingService;
+import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -39,13 +39,11 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
-import retrofit2.Call;
-
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
 	@Autowired
-	private LineMessagingService lineMessagingService;
+	private LineMessagingClient lineMessagingClient;
 	
 	int seed;
 	Random random = new Random();
@@ -63,7 +61,36 @@ public class Oripyon_jr {
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         jsonParser();
         
-        return new TextMessage(getresultString(event));
+        String message = event.getMessage().getText();
+        System.out.println(message);
+        System.out.println("sender : " + event.getSource().getSenderId());
+        System.out.println("user : " + event.getSource().getUserId());
+        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
+        System.out.println(sender);
+        String returnMessage = null;
+        
+        if(message.startsWith("!")){
+//        	try {
+	        	String key = message.split(" ")[0].substring(1);
+	        	String target = message.substring(key.length() + 1);
+			
+	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+					returnMessage = binaryCommand.get(key).replace("{}", target).replace("{}", target);
+	        	}
+	        	if(unaryCommand.get(key) != null){
+					returnMessage = unaryCommand.get(key).replace("{}", target);
+	        	}
+//        	} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+        }
+        
+        if(message.contains("陳彥霖")){
+        	seed = random.nextInt(noodle.length);
+        	returnMessage = noodle[seed];
+        }
+        
+        return new TextMessage(returnMessage);
     }
 
     @EventMapping
@@ -87,39 +114,4 @@ public class Oripyon_jr {
 			e.printStackTrace();
 		}
     }
-    
-    private String getresultString(MessageEvent<TextMessageContent> event){
-    	String message = event.getMessage().getText();
-        System.out.println(message);
-        System.out.println("sender : " + event.getSource().getSenderId());
-        System.out.println("user : " + event.getSource().getUserId());
-        Call<UserProfileResponse> sender = lineMessagingService.getProfile(event.getSource().getSenderId());
-        System.out.println(sender);
-        String returnMessage = null;
-        
-        if(message.startsWith("!")){
-        	try {
-	        	String key = message.split(" ")[0].substring(1);
-	        	String target = message.substring(key.length() + 1);
-			
-	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-					returnMessage = binaryCommand.get(key).replace("{}", sender.execute().body().getDisplayName()).replace("{}", target);
-	        	}
-	        	if(unaryCommand.get(key) != null){
-					returnMessage = unaryCommand.get(key).replace("{}", sender.execute().body().getDisplayName());
-	        	}
-        	} catch (IOException e) {
-				e.printStackTrace();
-			}
-        }
-        
-        if(message.contains("陳彥霖")){
-        	seed = random.nextInt(noodle.length);
-        	returnMessage = noodle[seed];
-        }
-        
-        return returnMessage;
-    }
-    
-    
 }
