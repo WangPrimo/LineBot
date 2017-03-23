@@ -26,7 +26,7 @@ jar {
 }
 
 findbugs {
-ignoreFailures = true
+	ignoreFailures = true
 }
 
 dependencies {
