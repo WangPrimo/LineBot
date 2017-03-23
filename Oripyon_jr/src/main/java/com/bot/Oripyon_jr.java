@@ -97,7 +97,7 @@ public class Oripyon_jr {
     	String message = event.getMessage().getText();
         
         try {
-			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
+			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
 			
 			if(message.startsWith("!")){
 	        	String key = message.split(" ")[0].substring(1);
