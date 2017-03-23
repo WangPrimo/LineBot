@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -66,7 +67,13 @@ public class Oripyon_jr {
         System.out.println("sender : " + event.getSource().getSenderId());
         System.out.println("user : " + event.getSource().getUserId());
         CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
-        System.out.println(sender);
+        UserProfileResponse userProfileResponse = null;
+        try {
+			userProfileResponse = sender.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		}
+        System.out.println(userProfileResponse);
         String returnMessage = null;
         
         if(message.startsWith("!")){
