@@ -23,7 +23,6 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -71,7 +70,7 @@ public class Oripyon_jr {
 	        	String key = message.split(" ")[0].substring(1);
 	        	String target = message.substring(key.length() + 1);
 			
-	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+	        	if(binaryCommand.get(key) != null && target != ""){
 					returnMessage = binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
 	        	}
 	        	if(unaryCommand.get(key) != null){
@@ -81,31 +80,13 @@ public class Oripyon_jr {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
-//        UserProfileResponse userProfileResponse = null;
-//        try {
-//			userProfileResponse = sender.get();
-//		} catch (InterruptedException | ExecutionException e) {
-//			e.printStackTrace();
-//		}
-//        System.out.println(userProfileResponse);
-        
-        
-//        if (response.isSuccessful()) {
-//            UserProfileResponse profile = response.body();
-//            System.out.println(profile.getDisplayName());
-//            System.out.println(profile.getPictureUrl());
-//            System.out.println(profile.getStatusMessage());
-//        } else {
-//            System.out.println(response.code() + " " + response.message());
-//        }
         
         if(message.contains("陳彥霖")){
         	seed = random.nextInt(noodle.length);
         	returnMessage = noodle[seed];
         }
         
-        if(StringUtils.isEmpty(returnMessage)){
+        if(returnMessage == null){
         	return null;
         }else{
         	return new TextMessage(returnMessage);
