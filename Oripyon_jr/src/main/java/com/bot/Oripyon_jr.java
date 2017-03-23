@@ -31,7 +31,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.linecorp.bot.client.LineMessagingClientImpl;
+import com.linecorp.bot.client.LineMessagingClient;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -44,7 +44,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @LineMessageHandler
 public class Oripyon_jr {
 	@Autowired
-	private LineMessagingClientImpl lineMessagingClientImpl;
+	private LineMessagingClient lineMessagingClient;
 	
 	int seed;
 	Random random = new Random();
@@ -64,7 +64,7 @@ public class Oripyon_jr {
         
         String message = event.getMessage().getText();
         System.out.println(message);
-        CompletableFuture<UserProfileResponse> sender = lineMessagingClientImpl.getProfile(event.getSource().getUserId());
+        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getUserId());
         String returnMessage = null;
         
         if(message.startsWith("!")){
