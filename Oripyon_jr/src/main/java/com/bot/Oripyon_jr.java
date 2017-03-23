@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -37,7 +38,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
-	
+	LineMessagingService lineMessagingService;
 	int seed;
 	Random random = new Random();
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","ㄧ"};
@@ -63,7 +64,7 @@ public class Oripyon_jr {
         	String target = message.substring(key.length() + 1);
         	if(binaryCommand.get(key) != null){
 			String senderId = event.getSource().getUserId();
-			UserProfileResponse sender = getUserProfile(senderId);
+			UserProfileResponse sender = lineMessagingService.getProfile(senderId);
         		returnMessage = sender.getDisplayName() + binaryCommand.get(key);
         	}
         }
