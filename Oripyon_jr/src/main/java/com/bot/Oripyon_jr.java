@@ -58,13 +58,13 @@ public class Oripyon_jr {
         String message = event.getMessage().getText();
         String returnMessage = null;
         
-//        if(message.startsWith("!")){
-//        	String key = message.split(" ")[0].substring(1);
-//        	String target = message.substring(key.length() + 1);
-//        	if(binaryCommand.get(key) != null){
-//        		returnMessage = binaryCommand.get(key);
-//        	}
-//        }
+        if(message.startsWith("!")){
+        	String key = message.split(" ")[0].substring(1);
+        	String target = message.substring(key.length() + 1);
+        	if(binaryCommand.get(key) != null){
+        		returnMessage = binaryCommand.get(key);
+        	}
+        }
         
         if(message.contains("陳彥霖")){
         	seed = random.nextInt(noodle.length);
