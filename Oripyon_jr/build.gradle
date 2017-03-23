@@ -25,6 +25,10 @@ jar {
     from 'src/main/java/com/bot'
 }
 
+findbugs {
+ignoreFailures = true
+}
+
 dependencies {
     compile project(':line-bot-spring-boot')
 }
