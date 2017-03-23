@@ -39,8 +39,8 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
-	@Autowired
-	LineMessagingService lineMessagingService;
+	
+	private final LineMessagingService lineMessagingService;
 	int seed;
 	Random random = new Random();
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","ㄧ"};
