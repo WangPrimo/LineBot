@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -71,7 +72,7 @@ public class Oripyon_jr {
 	        	String key = message.split(" ")[0].substring(1);
 	        	String target = message.substring(key.length() + 1);
 			
-	        	if(binaryCommand.get(key) != null){
+	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
 	        		returnMessage = binaryCommand.get(key).replace("{}", sender.get().getDisplayName()).replace("{}", target);
 	        	}
 	        	if(unaryCommand.get(key) != null){
@@ -86,7 +87,7 @@ public class Oripyon_jr {
         
         if(message.contains("陳彥霖")){
         	seed = random.nextInt(noodle.length);
-        	returnMessage = noodle[seed] + "test";
+        	returnMessage = noodle[seed];
         }
         
         return new TextMessage(returnMessage);
