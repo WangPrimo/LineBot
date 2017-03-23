@@ -72,7 +72,7 @@ public class Oripyon_jr {
         	}
 		if(unaryCommand.get(key) != null){
 			//UserProfileResponse sender = LineMessagingService.getProfile(senderId);
-        		returnMessage = senderId + unaryCommand.get(key);
+        		returnMessage = unaryCommand.get(key).replace("{}", target);
         	}
         }
         
