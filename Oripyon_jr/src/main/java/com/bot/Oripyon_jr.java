@@ -73,8 +73,8 @@ public class Oripyon_jr {
         		returnMessage = senderId + binaryCommand.get(key);
         	}
 		if(unaryCommand.get(key) != null){
-			final UserProfileResponse sender = lineMessagingService.getProfile(senderId);
-        		returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
+			//final UserProfileResponse sender = lineMessagingService.getProfile(senderId);
+        		returnMessage = unaryCommand.get(key).replace("{}", target);
         	}
         }
         
