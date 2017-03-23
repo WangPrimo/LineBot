@@ -62,7 +62,8 @@ public class Oripyon_jr {
         	String key = message.split(" ")[0].substring(1);
         	String target = message.substring(key.length() + 1);
         	if(binaryCommand.get(key) != null){
-        		returnMessage = binaryCommand.get(key);
+			String owner = event.getSource().getUserId();
+        		returnMessage = owner + binaryCommand.get(key);
         	}
         }
         
