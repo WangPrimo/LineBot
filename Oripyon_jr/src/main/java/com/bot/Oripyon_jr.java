@@ -53,7 +53,7 @@ public class Oripyon_jr {
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         System.out.println("event: " + event);
         
-        jsonParser();
+//        jsonParser();
         
         String message = event.getMessage().getText();
         String returnMessage = null;
