@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.LineMessagingServiceBuilder;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -45,6 +46,8 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 public class Oripyon_jr {
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
+	@Autowired
+	private LineMessagingServiceBuilder lineMessagingServiceBuilder;
 	
 	int seed;
 	Random random = new Random();
@@ -60,44 +63,62 @@ public class Oripyon_jr {
 
     @EventMapping
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    	
         jsonParser();
         
         String message = event.getMessage().getText();
         System.out.println(message);
         System.out.println("sender : " + event.getSource().getSenderId());
         System.out.println("user : " + event.getSource().getUserId());
-        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
-        UserProfileResponse userProfileResponse = null;
-        try {
-			userProfileResponse = sender.get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		}
-        System.out.println(userProfileResponse);
-        String returnMessage = null;
         
-        if(message.startsWith("!")){
-//        	try {
+        String returnMessage = null;
+        try {
+			UserProfileResponse sender = lineMessagingServiceBuilder.build().getProfile(event.getSource().getSenderId()).execute().body();
+			
+			if(message.startsWith("!")){
 	        	String key = message.split(" ")[0].substring(1);
 	        	String target = message.substring(key.length() + 1);
 			
 	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-					returnMessage = binaryCommand.get(key).replace("{}", target).replace("{}", target);
+					returnMessage = binaryCommand.get(key).replace("{}", sender.getDisplayName()).replace("{}", target);
 	        	}
 	        	if(unaryCommand.get(key) != null){
-					returnMessage = unaryCommand.get(key).replace("{}", target);
+					returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
 	        	}
-//        	} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-        }
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
+//        UserProfileResponse userProfileResponse = null;
+//        try {
+//			userProfileResponse = sender.get();
+//		} catch (InterruptedException | ExecutionException e) {
+//			e.printStackTrace();
+//		}
+//        System.out.println(userProfileResponse);
+        
+        
+//        if (response.isSuccessful()) {
+//            UserProfileResponse profile = response.body();
+//            System.out.println(profile.getDisplayName());
+//            System.out.println(profile.getPictureUrl());
+//            System.out.println(profile.getStatusMessage());
+//        } else {
+//            System.out.println(response.code() + " " + response.message());
+//        }
         
         if(message.contains("陳彥霖")){
         	seed = random.nextInt(noodle.length);
         	returnMessage = noodle[seed];
         }
         
-        return new TextMessage(returnMessage);
+        if(StringUtils.isEmpty(returnMessage)){
+        	return null;
+        }else{
+        	return new TextMessage(returnMessage);
+        }
+        
     }
 
     @EventMapping
