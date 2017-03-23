@@ -17,10 +17,8 @@
 package com.bot;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.linecorp.bot.client.LineMessagingClient;
+import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -41,11 +39,13 @@ import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
+import retrofit2.Call;
+
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
 	@Autowired
-	private LineMessagingClient lineMessagingClient;
+	private LineMessagingService lineMessagingService;
 	
 	int seed;
 	Random random = new Random();
@@ -53,7 +53,6 @@ public class Oripyon_jr {
 	
 	HashMap<String, String> binaryCommand;
 	HashMap<String, String> unaryCommand;
-	String returnMessage;
 	
 	
     public static void main(String[] args) {
@@ -68,27 +67,19 @@ public class Oripyon_jr {
         System.out.println(message);
         System.out.println("sender : " + event.getSource().getSenderId());
         System.out.println("user : " + event.getSource().getUserId());
-        if(lineMessagingClient == null){
-        	System.out.println("in");
-        }
-        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
-        System.out.println(sender);
-        
+        Call<UserProfileResponse> sender = lineMessagingService.getProfile(event.getSource().getSenderId());
+        System.out.println(sender.toString());
+        String returnMessage = null;
         
         if(message.startsWith("!")){
         	String key = message.split(" ")[0].substring(1);
         	String target = message.substring(key.length() + 1);
 		
         	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-        		sender.whenComplete((profile, throwable) -> {
-        			returnMessage = binaryCommand.get(key).replace("{}", profile.getDisplayName()).replace("{}", target);
-                });
-        		
+        		returnMessage = binaryCommand.get(key).replace("{}", sender.toString()).replace("{}", target);
         	}
         	if(unaryCommand.get(key) != null){
-        		sender.whenComplete((profile, throwable) -> {
-        			returnMessage = unaryCommand.get(key).replace("{}", profile.getDisplayName());
-                });
+				returnMessage = unaryCommand.get(key).replace("{}", sender.toString());
         	}
         }
         
