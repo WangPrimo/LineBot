@@ -39,6 +39,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
+	private LineMessagingService lineMessagingService;
 	
 	int seed;
 	Random random = new Random();
@@ -71,7 +72,7 @@ public class Oripyon_jr {
         		returnMessage = senderId + binaryCommand.get(key);
         	}
 		if(unaryCommand.get(key) != null){
-			UserProfileResponse sender = LineMessagingService.getProfile(senderId);
+			UserProfileResponse sender = lineMessagingService.getProfile(senderId);
         		returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
         	}
         }
