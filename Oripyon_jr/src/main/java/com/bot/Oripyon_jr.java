@@ -19,8 +19,6 @@ package com.bot;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -31,8 +29,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.linecorp.bot.client.LineMessagingClient;
-import com.linecorp.bot.client.LineMessagingServiceBuilder;
+import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -45,9 +42,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @LineMessageHandler
 public class Oripyon_jr {
 	@Autowired
-	private LineMessagingClient lineMessagingClient;
-	@Autowired
-	private LineMessagingServiceBuilder lineMessagingServiceBuilder;
+	private LineMessagingService lineMessagingService;
 	
 	int seed;
 	Random random = new Random();
@@ -73,7 +68,7 @@ public class Oripyon_jr {
         
         String returnMessage = null;
         try {
-			UserProfileResponse sender = lineMessagingServiceBuilder.build().getProfile(event.getSource().getSenderId()).execute().body();
+			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
 			
 			if(message.startsWith("!")){
 	        	String key = message.split(" ")[0].substring(1);
