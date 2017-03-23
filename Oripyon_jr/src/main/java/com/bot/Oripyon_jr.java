@@ -63,39 +63,7 @@ public class Oripyon_jr {
     public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
         jsonParser();
         
-        String message = event.getMessage().getText();
-        System.out.println(message);
-        System.out.println("sender : " + event.getSource().getSenderId());
-        System.out.println("user : " + event.getSource().getUserId());
-        Call<UserProfileResponse> sender = lineMessagingService.getProfile(event.getSource().getSenderId());
-        System.out.println(sender);
-        String returnMessage = null;
-        
-        if(message.startsWith("!")){
-        	try {
-	        	String key = message.split(" ")[0].substring(1);
-	        	String target = message.substring(key.length() + 1);
-			
-	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-	        		
-						returnMessage = binaryCommand.get(key).replace("{}", sender.execute().body().getDisplayName()).replace("{}", target);
-					
-	        	}
-	        	if(unaryCommand.get(key) != null){
-					returnMessage = unaryCommand.get(key).replace("{}", sender.execute().body().getDisplayName());
-	        	}
-        	} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-        
-        if(message.contains("陳彥霖")){
-        	seed = random.nextInt(noodle.length);
-        	returnMessage = noodle[seed];
-        }
-        
-        return new TextMessage(returnMessage);
+        return new TextMessage(getresultString(event));
     }
 
     @EventMapping
@@ -119,4 +87,39 @@ public class Oripyon_jr {
 			e.printStackTrace();
 		}
     }
+    
+    private String getresultString(MessageEvent<TextMessageContent> event){
+    	String message = event.getMessage().getText();
+        System.out.println(message);
+        System.out.println("sender : " + event.getSource().getSenderId());
+        System.out.println("user : " + event.getSource().getUserId());
+        Call<UserProfileResponse> sender = lineMessagingService.getProfile(event.getSource().getSenderId());
+        System.out.println(sender);
+        String returnMessage = null;
+        
+        if(message.startsWith("!")){
+        	try {
+	        	String key = message.split(" ")[0].substring(1);
+	        	String target = message.substring(key.length() + 1);
+			
+	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+					returnMessage = binaryCommand.get(key).replace("{}", sender.execute().body().getDisplayName()).replace("{}", target);
+	        	}
+	        	if(unaryCommand.get(key) != null){
+					returnMessage = unaryCommand.get(key).replace("{}", sender.execute().body().getDisplayName());
+	        	}
+        	} catch (IOException e) {
+				e.printStackTrace();
+			}
+        }
+        
+        if(message.contains("陳彥霖")){
+        	seed = random.nextInt(noodle.length);
+        	returnMessage = noodle[seed];
+        }
+        
+        return returnMessage;
+    }
+    
+    
 }
