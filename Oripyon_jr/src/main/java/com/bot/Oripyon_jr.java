@@ -64,23 +64,23 @@ public class Oripyon_jr {
         String message = event.getMessage().getText();
         
         String returnMessage = null;
-//        try {
-//			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
+        try {
+			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
 			
 			if(message.startsWith("!")){
 	        	String key = message.split(" ")[0].substring(1);
 	        	String target = message.substring(key.length() + 1);
 			
 	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-					returnMessage = binaryCommand.get(key).replace("{}", target).replace("{}", target);
+					returnMessage = binaryCommand.get(key).replace("{}", sender.getDisplayName()).replace("{}", target);
 	        	}
-//	        	if(unaryCommand.get(key) != null){
-//					returnMessage = unaryCommand.get(key).replace("{}", target);
-//	        	}
+	        	if(unaryCommand.get(key) != null){
+					returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
+	        	}
 	        }
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 //        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
 //        UserProfileResponse userProfileResponse = null;
 //        try {
