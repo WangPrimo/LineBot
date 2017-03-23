@@ -27,8 +27,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.linecorp.bot.client.LineMessagingService;
-//import com.linecorp.bot.model.profile.UserProfileResponse
+import com.linecorp.bot.client.LineMessagingService;
+import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -71,8 +71,8 @@ public class Oripyon_jr {
         		returnMessage = senderId + binaryCommand.get(key);
         	}
 		if(unaryCommand.get(key) != null){
-			//UserProfileResponse sender = LineMessagingService.getProfile(senderId);
-        		returnMessage = unaryCommand.get(key).replace("{}", target);
+			UserProfileResponse sender = LineMessagingService.getProfile(senderId);
+        		returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
         	}
         }
         
