@@ -65,8 +65,8 @@ public class Oripyon_jr {
         	String target = message.substring(key.length() + 1);
         	if(binaryCommand.get(key) != null){
 			String senderId = event.getSource().getUserId();
-			UserProfileResponse sender = LineMessagingService.getProfile(senderId);
-        		returnMessage = sender.getDisplayName() + binaryCommand.get(key);
+			//UserProfileResponse sender = LineMessagingService.getProfile(senderId);
+        		returnMessage = senderId + binaryCommand.get(key);
         	}
         }
         
