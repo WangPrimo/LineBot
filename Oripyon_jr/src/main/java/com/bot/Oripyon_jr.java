@@ -39,7 +39,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
-
+	@Autowired
 	private final LineMessagingService lineMessagingService;
 	
 	int seed;
