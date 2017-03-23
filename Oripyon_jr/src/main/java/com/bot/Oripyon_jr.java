@@ -45,6 +45,7 @@ public class Oripyon_jr {
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","ㄧ"};
 	
 	HashMap<String, String> binaryCommand;
+	HashMap<String, String> unaryCommand;
 	
 	
     public static void main(String[] args) {
@@ -63,10 +64,15 @@ public class Oripyon_jr {
         if(message.startsWith("!")){
         	String key = message.split(" ")[0].substring(1);
         	String target = message.substring(key.length() + 1);
+		String senderId = event.getSource().getUserId();
         	if(binaryCommand.get(key) != null){
-			String senderId = event.getSource().getUserId();
+			
 			//UserProfileResponse sender = LineMessagingService.getProfile(senderId);
         		returnMessage = senderId + binaryCommand.get(key);
+        	}
+		if(unaryCommand.get(key) != null){
+			//UserProfileResponse sender = LineMessagingService.getProfile(senderId);
+        		returnMessage = senderId + unaryCommand.get(key);
         	}
         }
         
@@ -88,7 +94,8 @@ public class Oripyon_jr {
     		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String,String>>(){};
         	ObjectMapper mapper = new ObjectMapper();
     		
-			binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),typeRef);
+		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),typeRef);
+		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"),typeRef);
 			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
