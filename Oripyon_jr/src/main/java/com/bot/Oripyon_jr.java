@@ -40,7 +40,6 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @LineMessageHandler
 public class Oripyon_jr {
 	
-	private final LineMessagingService lineMessagingService;
 	int seed;
 	Random random = new Random();
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","ㄧ"};
@@ -66,7 +65,7 @@ public class Oripyon_jr {
         	String target = message.substring(key.length() + 1);
         	if(binaryCommand.get(key) != null){
 			String senderId = event.getSource().getUserId();
-			UserProfileResponse sender = lineMessagingService.getProfile(senderId);
+			UserProfileResponse sender = LineMessagingService.getProfile(senderId);
         		returnMessage = sender.getDisplayName() + binaryCommand.get(key);
         	}
         }
