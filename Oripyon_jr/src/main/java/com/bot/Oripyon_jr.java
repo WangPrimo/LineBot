@@ -74,9 +74,9 @@ public class Oripyon_jr {
 	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
 					returnMessage = binaryCommand.get(key).replace("{}", target).replace("{}", target);
 	        	}
-	        	if(unaryCommand.get(key) != null){
-					returnMessage = unaryCommand.get(key).replace("{}", target);
-	        	}
+//	        	if(unaryCommand.get(key) != null){
+//					returnMessage = unaryCommand.get(key).replace("{}", target);
+//	        	}
 	        }
 //		} catch (IOException e) {
 //			e.printStackTrace();
