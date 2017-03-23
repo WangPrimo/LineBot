@@ -62,28 +62,25 @@ public class Oripyon_jr {
         jsonParser();
         
         String message = event.getMessage().getText();
-        System.out.println(message);
-        System.out.println("sender : " + event.getSource().getSenderId());
-        System.out.println("user : " + event.getSource().getUserId());
         
         String returnMessage = null;
-        try {
-			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
+//        try {
+//			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
 			
 			if(message.startsWith("!")){
 	        	String key = message.split(" ")[0].substring(1);
 	        	String target = message.substring(key.length() + 1);
 			
 	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-					returnMessage = binaryCommand.get(key).replace("{}", sender.getDisplayName()).replace("{}", target);
+					returnMessage = binaryCommand.get(key).replace("{}", target).replace("{}", target);
 	        	}
 	        	if(unaryCommand.get(key) != null){
-					returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
+					returnMessage = unaryCommand.get(key).replace("{}", target);
 	        	}
 	        }
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 //        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
 //        UserProfileResponse userProfileResponse = null;
 //        try {
