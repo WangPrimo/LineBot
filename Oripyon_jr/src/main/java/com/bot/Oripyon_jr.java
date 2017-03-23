@@ -43,7 +43,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
-	
+	@Autowired
 	private LineMessagingClient lineMessagingClient;
 	
 	int seed;
@@ -66,6 +66,9 @@ public class Oripyon_jr {
         System.out.println(message);
         System.out.println("sender : " + event.getSource().getSenderId());
         System.out.println("user : " + event.getSource().getUserId());
+        if(lineMessagingClient == null){
+        	System.out.println("in");
+        }
         CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
         System.out.println(sender);
         String returnMessage = null;
