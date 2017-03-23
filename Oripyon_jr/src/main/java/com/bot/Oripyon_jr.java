@@ -64,7 +64,7 @@ public class Oripyon_jr {
         
         String message = event.getMessage().getText();
         System.out.println(message);
-        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getUserId());
+        CompletableFuture<UserProfileResponse> sender = lineMessagingClient.getProfile(event.getSource().getSenderId());
         String returnMessage = null;
         
         if(message.startsWith("!")){
