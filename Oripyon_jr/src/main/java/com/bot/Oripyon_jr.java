@@ -72,7 +72,7 @@ public class Oripyon_jr {
 	        	String target = message.substring(key.length() + 1);
 			
 	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-					returnMessage = binaryCommand.get(key).replace("{}", sender.getDisplayName()).replace("{}", target);
+					returnMessage = binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
 	        	}
 	        	if(unaryCommand.get(key) != null){
 					returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
