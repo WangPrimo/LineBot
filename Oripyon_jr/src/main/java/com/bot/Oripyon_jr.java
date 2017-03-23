@@ -23,6 +23,7 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -60,33 +61,9 @@ public class Oripyon_jr {
     	
         jsonParser();
         
-        String message = event.getMessage().getText();
+        String returnMessage = replyString(event);
         
-        String returnMessage = null;
-        try {
-			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
-			
-			if(message.startsWith("!")){
-	        	String key = message.split(" ")[0].substring(1);
-	        	String target = message.substring(key.length() + 1);
-			
-	        	if(binaryCommand.get(key) != null && target != ""){
-					returnMessage = binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
-	        	}
-	        	if(unaryCommand.get(key) != null){
-					returnMessage = unaryCommand.get(key).replace("{}", sender.getDisplayName());
-	        	}
-	        }
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
-        if(message.contains("陳彥霖")){
-        	seed = random.nextInt(noodle.length);
-        	returnMessage = noodle[seed];
-        }
-        
-        if(returnMessage == null){
+        if(StringUtils.isEmpty(returnMessage)){
         	return null;
         }else{
         	return new TextMessage(returnMessage);
@@ -114,5 +91,33 @@ public class Oripyon_jr {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+    }
+    
+    private String replyString(MessageEvent<TextMessageContent> event){
+    	String message = event.getMessage().getText();
+        
+        try {
+			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
+			
+			if(message.startsWith("!")){
+	        	String key = message.split(" ")[0].substring(1);
+	        	String target = message.substring(key.length() + 1);
+			
+	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+	        		return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
+	        	}
+	        	if(unaryCommand.get(key) != null){
+	        		return unaryCommand.get(key).replace("{}", sender.getDisplayName());
+	        	}
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        if(message.contains("陳彥霖")){
+        	seed = random.nextInt(noodle.length);
+        	return noodle[seed];
+        }
+        return null;
     }
 }
