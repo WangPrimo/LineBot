@@ -47,7 +47,7 @@ public class Oripyon_jr {
 	int seed;
 	Random random = new Random();
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","頂新"};
-	
+	String[] scoreCards;
 	HashMap<String, String> binaryCommand;
 	HashMap<String, String> unaryCommand;
 	
@@ -78,41 +78,45 @@ public class Oripyon_jr {
     
     private void jsonParser(){
     	try {
-    		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String,String>>(){};
+    		TypeReference<HashMap<String, String>> map = new TypeReference<HashMap<String,String>>(){};
+		TypeReference<String[]> array = new TypeReference<String[]>(){};
         	ObjectMapper mapper = new ObjectMapper();
     		
-		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),typeRef);
-		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"),typeRef);
-			
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),map);
+		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"),map);
+		scoreCards = mapper.readValue(getClass().getResourceAsStream("/command/scoreCard.json"),array);
+	} catch (JsonParseException e) {
+		e.printStackTrace();
+	} catch (JsonMappingException e) {
+		e.printStackTrace();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
     }
     
     private String replyString(MessageEvent<TextMessageContent> event){
     	String message = event.getMessage().getText();
         
         try {
-			UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
-			
-			if(message.startsWith("!")){
-	        	String key = message.split(" ")[0].substring(1);
-	        	String target = message.substring(key.length() + 1);
-			
-	        	if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-	        		return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
-	        	}
-	        	if(unaryCommand.get(key) != null){
-	        		return unaryCommand.get(key).replace("{}", sender.getDisplayName());
-	        	}
-	        }
-		} catch (IOException e) {
-			e.printStackTrace();
+		//UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
+		if(message.startsWith("!")){
+			String key = message.split(" ")[0].substring(1);
+			String target = message.substring(key.length() + 1);
+
+			//if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+			//	return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
+			//}
+			//if(unaryCommand.get(key) != null){
+			//	return unaryCommand.get(key).replace("{}", sender.getDisplayName());
+			//}
+			if("jolin".equals(key)){
+				seed = random.nextInt(scoreCards.length);
+        			return scoreCards[seed];
+			}
 		}
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
         
         if(message.contains("陳彥霖")){
         	seed = random.nextInt(noodle.length);
