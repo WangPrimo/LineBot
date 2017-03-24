@@ -97,7 +97,7 @@ public class Oripyon_jr {
     private String replyString(MessageEvent<TextMessageContent> event){
     	String message = event.getMessage().getText();
         
-        try {
+       // try {
 		//UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
 		if(message.startsWith("!")){
 			String key = message.split(" ")[0].substring(1);
@@ -114,9 +114,9 @@ public class Oripyon_jr {
         			return scoreCards[seed];
 			}
 		}
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
+	//} catch (IOException e) {
+	//	e.printStackTrace();
+	//}
         
         if(message.contains("陳彥霖")){
         	seed = random.nextInt(noodle.length);
