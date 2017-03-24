@@ -78,12 +78,12 @@ public class Oripyon_jr {
     
     private void jsonParser(){
     	try {
-    		TypeReference<HashMap<String, String>> map = new TypeReference<HashMap<String,String>>(){};
+    		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String,String>>(){};
 		//TypeReference<ArrayList<String>> array = new TypeReference<ArrayList<String>>(){};
         	ObjectMapper mapper = new ObjectMapper();
     		
-		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),map);
-		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"),map);
+		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),typeRef);
+		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"),typeRef);
 		//scoreCards = mapper.readValue(getClass().getResourceAsStream("/command/scoreCard.json"),array);
 	} catch (JsonParseException e) {
 		e.printStackTrace();
