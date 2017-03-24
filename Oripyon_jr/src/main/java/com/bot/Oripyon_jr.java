@@ -18,6 +18,7 @@ package com.bot;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class Oripyon_jr {
 	int seed;
 	Random random = new Random();
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","頂新"};
-	String[] scoreCards;
+	ArrayList<String> scoreCards;
 	HashMap<String, String> binaryCommand;
 	HashMap<String, String> unaryCommand;
 	
@@ -79,7 +80,7 @@ public class Oripyon_jr {
     private void jsonParser(){
     	try {
     		TypeReference<HashMap<String, String>> map = new TypeReference<HashMap<String,String>>(){};
-		TypeReference<String[]> array = new TypeReference<String[]>(){};
+		TypeReference<ArrayList<String>> array = new TypeReference<ArrayList<String>>(){};
         	ObjectMapper mapper = new ObjectMapper();
     		
 		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),map);
@@ -110,8 +111,8 @@ public class Oripyon_jr {
 			//	return unaryCommand.get(key).replace("{}", sender.getDisplayName());
 			//}
 			if("jolin".equals(key)){
-				seed = random.nextInt(scoreCards.length);
-        			return scoreCards[seed];
+				seed = random.nextInt(scoreCards.size());
+        			return scoreCards.get(seed);
 			}
 		}
 	} catch (IOException e) {
