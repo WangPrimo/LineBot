@@ -47,7 +47,7 @@ public class Oripyon_jr {
 	int seed;
 	Random random = new Random();
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","頂新"};
-	String[] scoreCards = {"._./[0]","._./[1]","._./[2]","._./[3]","._./[4]","._./[5]","._./[6]","._./[7]","._./[8]","._./[9]","._.凸"};
+	String[] scoreCards; //= {"._./[0]","._./[1]","._./[2]","._./[3]","._./[4]","._./[5]","._./[6]","._./[7]","._./[8]","._./[9]","._.凸"};
 	HashMap<String, String> binaryCommand;
 	HashMap<String, String> unaryCommand;
 	
@@ -78,13 +78,13 @@ public class Oripyon_jr {
     
     private void jsonParser(){
     	try {
-    		TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String,String>>(){};
-		//TypeReference<ArrayList<String>> array = new TypeReference<ArrayList<String>>(){};
+    		TypeReference<HashMap<String, String>> typeMap = new TypeReference<HashMap<String,String>>(){};
+    		TypeReference<String[]> typeArray = new TypeReference<String[]>(){};
         	ObjectMapper mapper = new ObjectMapper();
     		
-		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"),typeRef);
-		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"),typeRef);
-		//scoreCards = mapper.readValue(getClass().getResourceAsStream("/command/scoreCard.json"),array);
+		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMap);
+		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMap);
+		scoreCards = mapper.readValue(getClass().getResourceAsStream("/command/scoreCard.json"), typeArray);
 	} catch (JsonParseException e) {
 		e.printStackTrace();
 	} catch (JsonMappingException e) {
