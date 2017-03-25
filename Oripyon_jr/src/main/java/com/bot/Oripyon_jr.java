@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.StringUtils;
@@ -29,25 +28,24 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.TextMessage;
-import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
-	@Autowired
-	private LineMessagingService lineMessagingService;
+//	@Autowired
+//	private LineMessagingService lineMessagingService;
 	
 	int seed;
 	Random random = new Random();
 	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","頂新"};
 	String[] scoreCards; //= {"._./[0]","._./[1]","._./[2]","._./[3]","._./[4]","._./[5]","._./[6]","._./[7]","._./[8]","._./[9]","._.凸"};
+	HashMap<String, String[]> randomArrayCommand;
 	HashMap<String, String> binaryCommand;
 	HashMap<String, String> unaryCommand;
 	
@@ -78,20 +76,20 @@ public class Oripyon_jr {
     
     private void jsonParser(){
     	try {
-    		TypeReference<HashMap<String, String>> typeMap = new TypeReference<HashMap<String,String>>(){};
-    		TypeReference<String[]> typeArray = new TypeReference<String[]>(){};
+    		TypeReference<HashMap<String, String>> typeMapString = new TypeReference<HashMap<String,String>>(){};
+    		TypeReference<HashMap<String, String[]>> typeMapArray = new TypeReference<HashMap<String, String[]>>(){};
         	ObjectMapper mapper = new ObjectMapper();
     		
-		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMap);
-		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMap);
-		scoreCards = mapper.readValue(getClass().getResourceAsStream("/command/scoreCard.json"), typeArray);
-	} catch (JsonParseException e) {
-		e.printStackTrace();
-	} catch (JsonMappingException e) {
-		e.printStackTrace();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
+			binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMapString);
+			unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMapString);
+			randomArrayCommand = mapper.readValue(getClass().getResourceAsStream("/command/randomArray.json"), typeMapArray);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     private String replyString(MessageEvent<TextMessageContent> event){
@@ -101,7 +99,7 @@ public class Oripyon_jr {
 		//UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getSenderId()).execute().body();
 		if(message.startsWith("!")){
 			String key = message.split(" ")[0].substring(1);
-			String target = message.substring(key.length() + 1);
+//			String target = message.substring(key.length() + 1);
 
 			//if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
 			//	return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
@@ -109,9 +107,14 @@ public class Oripyon_jr {
 			//if(unaryCommand.get(key) != null){
 			//	return unaryCommand.get(key).replace("{}", sender.getDisplayName());
 			//}
-			if("jolin".equals(key)){
-				seed = random.nextInt(scoreCards.length);
-        			return scoreCards[seed];
+//			if("jolin".equals(key)){
+//				seed = random.nextInt(scoreCards.length);
+//        			return scoreCards[seed];
+//			}
+			if(randomArrayCommand.get(key) != null){
+				String[] randomArray =  randomArrayCommand.get(key);
+				seed = random.nextInt(randomArray.length);
+    			return randomArray[seed];
 			}
 		}
 	//} catch (IOException e) {
