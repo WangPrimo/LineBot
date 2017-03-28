@@ -105,7 +105,7 @@ public class Oripyon_jr {
 				if(event.getSource().getUserId() != null){
 					UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
 					if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-						return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
+						return binaryCommand.get(key).replaceFirst("{}", sender.getDisplayName()).replace("{}", target);
 					}
 					if(unaryCommand.get(key) != null){
 						return unaryCommand.get(key).replace("{}", sender.getDisplayName());
