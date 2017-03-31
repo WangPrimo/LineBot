@@ -75,28 +75,29 @@ public class Oripyon_jr {
     }
     
     private String replyString(MessageEvent<TextMessageContent> event){
-    	  String message = event.getMessage().getText();
+	String message = event.getMessage().getText();
         
         try {
-          if(message.startsWith("!")){
-			    String key = message.split(" ")[0].substring(1);
-			    String target = message.substring(key.length() + 1);
+		if(message.startsWith("!")){
+			String key = message.split(" ")[0].substring(1);
+			String target = message.substring(key.length() + 1);
 
-          if(event.getSource().getUserId() != null){
-            UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
-            if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-              return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
-            }
-            if(unaryCommand.get(key) != null){
-              return unaryCommand.get(key).replace("{}", sender.getDisplayName());
-            }
-          }
+			if(event.getSource().getUserId() != null){
+				UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
+				if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+					return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
+				}
+				if(unaryCommand.get(key) != null){
+					return unaryCommand.get(key).replace("{}", sender.getDisplayName());
+				}
+			}
 
-          if(randomArrayCommand.get(key) != null){
-            String[] randomArray =  randomArrayCommand.get(key);
-            seed = random.nextInt(randomArray.length);
-            return randomArray[seed];
-          }
+			if(randomArrayCommand.get(key) != null){
+				String[] randomArray =  randomArrayCommand.get(key);
+				seed = random.nextInt(randomArray.length);
+				return randomArray[seed];
+			}
+		}
         } catch (IOException e) {
           e.printStackTrace();
         }
@@ -106,19 +107,19 @@ public class Oripyon_jr {
 	
     private void jsonParser(){
     	try {
-    		TypeReference<HashMap<String, String>> typeMapString = new TypeReference<HashMap<String,String>>(){};
+		TypeReference<HashMap<String, String>> typeMapString = new TypeReference<HashMap<String,String>>(){};
     		TypeReference<HashMap<String, String[]>> typeMapArray = new TypeReference<HashMap<String, String[]>>(){};
-        ObjectMapper mapper = new ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
     		
-        binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMapString);
-        unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMapString);
-        randomArrayCommand = mapper.readValue(getClass().getResourceAsStream("/command/randomArray.json"), typeMapArray);
-      } catch (JsonParseException e) {
-        e.printStackTrace();
-      } catch (JsonMappingException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMapString);
+		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMapString);
+		randomArrayCommand = mapper.readValue(getClass().getResourceAsStream("/command/randomArray.json"), typeMapArray);
+	} catch (JsonParseException e) {
+		e.printStackTrace();
+	} catch (JsonMappingException e) {
+		e.printStackTrace();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
     }
 }
