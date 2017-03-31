@@ -91,12 +91,12 @@ public class Oripyon_jr {
 					return unaryCommand.get(key).replace("{}", sender.getDisplayName());
 				}
 			}
-		}
 
-		if(randomArrayCommand.get(key) != null){
-			String[] randomArray =  randomArrayCommand.get(key);
-			seed = random.nextInt(randomArray.length);
-			return randomArray[seed];
+			if(randomArrayCommand.get(key) != null){
+				String[] randomArray =  randomArrayCommand.get(key);
+				seed = random.nextInt(randomArray.length);
+				return randomArray[seed];
+			}
 		}
         } catch (IOException e) {
           e.printStackTrace();
