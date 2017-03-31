@@ -46,7 +46,6 @@ public class Oripyon_jr {
 	
 	int seed;
 	Random random = new Random();
-	String[] noodle = {"廢物","垃圾","蘿莉控","意淫業務的變態","處男","嫩","頂新"};
 	HashMap<String, String[]> randomArrayCommand;
 	HashMap<String, String> binaryCommand;
 	HashMap<String, String> unaryCommand;
@@ -68,7 +67,6 @@ public class Oripyon_jr {
         }else{
         	return new TextMessage(returnMessage);
         }
-        
     }
 
     @EventMapping
@@ -76,56 +74,52 @@ public class Oripyon_jr {
         System.out.println("event: " + event);
     }
     
+    private String replyString(MessageEvent<TextMessageContent> event){
+    	String message = event.getMessage().getText();
+        
+        try {
+		if(message.startsWith("!")){
+			String key = message.split(" ")[0].substring(1);
+			String target = message.substring(key.length() + 1);
+
+			if(event.getSource().getUserId() != null){
+				UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
+				if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+					return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
+				}
+				if(unaryCommand.get(key) != null){
+					return unaryCommand.get(key).replace("{}", sender.getDisplayName());
+				}
+			}
+
+			if(randomArrayCommand.get(key) != null){
+				String[] randomArray =  randomArrayCommand.get(key);
+				seed = random.nextInt(randomArray.length);
+			return randomArray[seed];
+			}
+		}
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+        
+        return null;
+    }
+	
     private void jsonParser(){
     	try {
     		TypeReference<HashMap<String, String>> typeMapString = new TypeReference<HashMap<String,String>>(){};
     		TypeReference<HashMap<String, String[]>> typeMapArray = new TypeReference<HashMap<String, String[]>>(){};
         	ObjectMapper mapper = new ObjectMapper();
     		
-			binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMapString);
-			unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMapString);
-			randomArrayCommand = mapper.readValue(getClass().getResourceAsStream("/command/randomArray.json"), typeMapArray);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    private String replyString(MessageEvent<TextMessageContent> event){
-    	String message = event.getMessage().getText();
-        
-        try {
-			if(message.startsWith("!")){
-				String key = message.split(" ")[0].substring(1);
-				String target = message.substring(key.length() + 1);
-				
-				if(event.getSource().getUserId() != null){
-					UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
-					if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-						return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
-					}
-					if(unaryCommand.get(key) != null){
-						return unaryCommand.get(key).replace("{}", sender.getDisplayName());
-					}
-				}
-				
-				if(randomArrayCommand.get(key) != null){
-					String[] randomArray =  randomArrayCommand.get(key);
-					seed = random.nextInt(randomArray.length);
-	    			return randomArray[seed];
-				}
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
-        if(message.contains("陳彥霖")){
-        	seed = random.nextInt(noodle.length);
-        	return noodle[seed];
-        }
-        return null;
+		binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMapString);
+		unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMapString);
+		randomArrayCommand = mapper.readValue(getClass().getResourceAsStream("/command/randomArray.json"), typeMapArray);
+	} catch (JsonParseException e) {
+		e.printStackTrace();
+	} catch (JsonMappingException e) {
+		e.printStackTrace();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
     }
 }
