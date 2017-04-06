@@ -25,6 +25,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.StringUtils;
 
+import com.bot.Enum.MultiKeyMap;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -92,8 +93,12 @@ public class Oripyon_jr {
 					}
 				}
 	
-				if(randomArrayCommand.get(key) != null){
-					String[] randomArray =  randomArrayCommand.get(key);
+				//key取不到value則檢查是否為multikey
+				if(randomArrayCommand.get(key) == null){
+					key = MultiKeyMap.getTrueKey(key);
+				}
+				String[] randomArray =  randomArrayCommand.get(key);
+				if(randomArray != null){
 					seed = random.nextInt(randomArray.length);
 					return randomArray[seed];
 				}
