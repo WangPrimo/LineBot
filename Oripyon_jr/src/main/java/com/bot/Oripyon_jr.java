@@ -34,6 +34,7 @@ import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
+import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
@@ -42,14 +43,34 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @SpringBootApplication
 @LineMessageHandler
 public class Oripyon_jr {
+	
+	static HashMap<String, String[]> randomArrayCommand;
+	static HashMap<String, String> binaryCommand;
+	static HashMap<String, String> unaryCommand;
+	
+	static{
+		try {
+			TypeReference<HashMap<String, String>> typeMapString = new TypeReference<HashMap<String,String>>(){};
+    		TypeReference<HashMap<String, String[]>> typeMapArray = new TypeReference<HashMap<String, String[]>>(){};
+			ObjectMapper mapper = new ObjectMapper();
+	    		
+			binaryCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/binary.json"), typeMapString);
+			unaryCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/unary.json"), typeMapString);
+			randomArrayCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/randomArray.json"), typeMapArray);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Autowired
 	private LineMessagingService lineMessagingService;
 	
 	int seed;
 	Random random = new Random();
-	HashMap<String, String[]> randomArrayCommand;
-	HashMap<String, String> binaryCommand;
-	HashMap<String, String> unaryCommand;
 	
 	
     public static void main(String[] args) {
@@ -57,17 +78,15 @@ public class Oripyon_jr {
     }
 
     @EventMapping
-    public TextMessage handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    public Message handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
     	
-        jsonParser();
+        String stringMessage = replyString(event);
         
-        String returnMessage = replyString(event);
-        
-        if(StringUtils.isEmpty(returnMessage)){
-        	return null;
-        }else{
-        	return new TextMessage(returnMessage);
+        if(!StringUtils.isEmpty(stringMessage)){
+        	return new TextMessage(stringMessage);
         }
+        
+        return null;
     }
 
     @EventMapping
@@ -110,21 +129,4 @@ public class Oripyon_jr {
         return null;
     }
 	
-    private void jsonParser(){
-    	try {
-			TypeReference<HashMap<String, String>> typeMapString = new TypeReference<HashMap<String,String>>(){};
-    		TypeReference<HashMap<String, String[]>> typeMapArray = new TypeReference<HashMap<String, String[]>>(){};
-			ObjectMapper mapper = new ObjectMapper();
-	    		
-			binaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/binary.json"), typeMapString);
-			unaryCommand = mapper.readValue(getClass().getResourceAsStream("/command/unary.json"), typeMapString);
-			randomArrayCommand = mapper.readValue(getClass().getResourceAsStream("/command/randomArray.json"), typeMapArray);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
 }
