@@ -164,6 +164,8 @@ public class Oripyon_jr {
     		if(scope >= scopeSeed && !checkDone){
     			System.out.println(scope);
     			System.out.println(scopeSeed);
+    			System.out.println(i);
+    			System.out.println(randomArray[i]);
     			seed = i;
     			checkDone = true;
     		}
