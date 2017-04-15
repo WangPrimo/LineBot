@@ -151,13 +151,8 @@ public class Oripyon_jr {
     		scope += stringValue.split("%=").length > 1 ?
     			new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN).multiply(hundred).intValue():
     			generalProbability;
-			System.out.println("第" + i + "項" + scope);
     			
     		if(scope >= scopeSeed){
-    			System.out.println(scope);
-    			System.out.println(scopeSeed);
-    			System.out.println(i);
-    			System.out.println(randomArray[i]);
     			return i;
     		}
     	}
