@@ -128,8 +128,8 @@ public class Oripyon_jr {
     		}
     	}
     	
-    	//機率總和大於100，不使用該array中的設定
-    	if(probabilityCount > 100){
+    	//機率總和大於100或等於0，直接隨機輸出陣列內容
+    	if(probabilityCount > 100 || probabilityCount == 0){
     		return randomArray[random.nextInt(randomArray.length)].split("%=")[0].trim();
     	}
     	
