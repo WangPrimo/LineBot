@@ -55,6 +55,7 @@ public class Oripyon_jr {
 	private LineMessagingService lineMessagingService;
 	
 	Random random = new Random();
+	BigDecimal hundred = new BigDecimal(100);
 	
 	
     public static void main(String[] args) {
@@ -102,10 +103,7 @@ public class Oripyon_jr {
 				}
 				String[] randomArray =  randomArrayCommand.get(key);
 				if(randomArray != null){
-					int seed = probabilityControl(randomArray);
-					
-					//將機率設定的字串從內容中切除
-					return randomArray[seed].split("%=")[0].trim();
+					return probabilityControl(randomArray);
 				}
 			}
         } catch (IOException e) {
@@ -116,9 +114,8 @@ public class Oripyon_jr {
     }
     
     //檢查RandomArray是否有機率設定並作相關處理
-    private int probabilityControl(String[] randomArray){
+    private String probabilityControl(String[] randomArray){
     	int withoutProbability = randomArray.length;
-    	BigDecimal hundred = new BigDecimal(100);
     	double probabilityCount = 0;
     	BigDecimal probability;
     	
@@ -128,13 +125,13 @@ public class Oripyon_jr {
     			//吃進的機率參數只取到小數2位
     			probability = new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN);
     			probabilityCount += probability.doubleValue();
-    			withoutProbability --;
+    			withoutProbability--;
     		}
     	}
     	
     	//機率總和大於100，不使用該array中的設定
     	if(probabilityCount > 100){
-    		return random.nextInt(randomArray.length);
+    		return randomArray[random.nextInt(randomArray.length)].split("%=")[0].trim();
     	}
     	
     	//未設定機率之內容的出現機率 ＝ 100 - 有設定機率總和 / 未設定機率個數
@@ -144,20 +141,18 @@ public class Oripyon_jr {
     	int scopeSeed = random.nextInt(10000) + 1;
     	int scope = 0;
     	
-    	//將每一個內容各自的scope疊加直到值大於seed便輸出該Array index
-    	for(int i=0;i<randomArray.length;i++){
-    		String stringValue = randomArray[i];
-    		
+    	//將每一個內容各自的scope疊加直到值大於seed便輸出該筆內容
+    	for(String stringValue:randomArray){
     		scope += stringValue.split("%=").length > 1 ?
     			new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN).multiply(hundred).intValue():
     			generalProbability;
     			
     		if(scope >= scopeSeed){
-    			return i;
+    			return stringValue.split("%=")[0].trim();
     		}
     	}
     	
-    	return random.nextInt(randomArray.length);
+    	return randomArray[random.nextInt(randomArray.length)].split("%=")[0].trim();
     }
 	
 }
