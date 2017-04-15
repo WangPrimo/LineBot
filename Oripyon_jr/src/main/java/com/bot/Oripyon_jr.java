@@ -1,6 +1,7 @@
 package com.bot;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -102,7 +103,7 @@ public class Oripyon_jr {
 				}
 				String[] randomArray =  randomArrayCommand.get(key);
 				if(randomArray != null){
-					seed = random.nextInt(randomArray.length);
+					seed = probabilityControl(randomArray);
 					return randomArray[seed];
 				}
 			}
@@ -111,6 +112,52 @@ public class Oripyon_jr {
         }
         
         return null;
+    }
+    
+    private int probabilityControl(String[] randomArray){
+    	int withoutProbability = randomArray.length;
+    	BigDecimal hundred = new BigDecimal(100);
+    	double probabilityCount = 0;
+    	BigDecimal probability;
+    	
+    	//迴圈取得有設定機率的總和及未設定機率的個數
+    	for(String stringValue:randomArray){
+    		if(stringValue.split("%=").length > 1){
+    			//吃進的參數只取道小數2位
+    			probability = new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN);
+    			probabilityCount += probability.doubleValue();
+    			withoutProbability --;
+    		}
+    	}
+    	
+    	//機率總和大於100，不使用
+    	if(probabilityCount > 100){
+    		return random.nextInt(randomArray.length);
+    	}
+    	
+    	//未設定機率之內容的出現機率 ＝ 100 - 有設定機率總和 / 未設定機率個數
+    	int generalProbability = hundred.subtract(new BigDecimal(probabilityCount)).divide(new BigDecimal(withoutProbability), 2, BigDecimal.ROUND_HALF_UP).multiply(hundred).intValue(); 
+    	
+    	seed = random.nextInt(10000) + 1;
+    	int scope = 0;
+    	
+    	//將每一個內容各自的scope疊加直到值大於seed便輸出該Array index
+    	for(int i=0;i<randomArray.length;i++){
+    		String stringValue = randomArray[i];
+    		
+    		scope += stringValue.split("%=").length > 1 ?
+    			new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN).multiply(hundred).intValue():
+    			generalProbability;
+    		
+    		//將機率設定的字串從內容中切除
+    		randomArray[i] = stringValue.split("%=")[0].trim();
+    		
+    		if(scope >= seed){
+    			return i;
+    		}
+    	}
+    	
+    	return random.nextInt(randomArray.length);
     }
 	
 }
