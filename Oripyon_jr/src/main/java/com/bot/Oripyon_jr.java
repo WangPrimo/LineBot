@@ -148,6 +148,7 @@ public class Oripyon_jr {
     	
     	int scopeSeed = random.nextInt(10000) + 1;
     	int scope = 0;
+    	boolean checkDone = false;
     	
     	//將每一個內容各自的scope疊加直到值大於seed便輸出該Array index
     	for(int i=0;i<randomArray.length;i++){
@@ -160,8 +161,9 @@ public class Oripyon_jr {
     		//將機率設定的字串從內容中切除
     		randomArray[i] = stringValue.split("%=")[0].trim();
     		
-    		if(scope >= scopeSeed){
+    		if(scope >= scopeSeed && !checkDone){
     			seed = i;
+    			checkDone = true;
     		}
     	}
     	
