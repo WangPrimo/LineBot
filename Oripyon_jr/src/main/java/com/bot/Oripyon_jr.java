@@ -104,7 +104,9 @@ public class Oripyon_jr {
 				String[] randomArray =  randomArrayCommand.get(key);
 				if(randomArray != null){
 					randomArray = probabilityControl(randomArray);
-					return randomArray[seed];
+					
+					//將機率設定的字串從內容中切除
+					return randomArray[seed].split("%=")[0].trim();
 				}
 			}
         } catch (IOException e) {
@@ -133,11 +135,6 @@ public class Oripyon_jr {
     	
     	//機率總和大於100，不使用該array中的設定
     	if(probabilityCount > 100){
-    		for(int i=0;i<randomArray.length;i++){
-    			//將機率設定的字串從內容中切除
-        		randomArray[i] = randomArray[i].split("%=")[0].trim();
-    		}
-    		
     		seed = random.nextInt(randomArray.length);
     		return randomArray;
     	}
@@ -159,9 +156,6 @@ public class Oripyon_jr {
     			generalProbability;
 			System.out.println("第" + i + "項" + scope);
     			
-    		//將機率設定的字串從內容中切除
-    		randomArray[i] = stringValue.split("%=")[0].trim();
-    		
     		if(scope >= scopeSeed && !checkDone){
     			System.out.println(scope);
     			System.out.println(scopeSeed);
