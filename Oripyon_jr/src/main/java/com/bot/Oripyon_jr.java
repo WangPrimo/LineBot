@@ -80,9 +80,8 @@ public class Oripyon_jr {
     }
     
     private String replyString(MessageEvent<TextMessageContent> event){
-	String message = event.getMessage().getText();
-        
-        try {
+    	String message = event.getMessage().getText();
+    	try {
 			if(message.startsWith("!")){
 				String key = message.split(" ")[0].substring(1);
 				String target = message.substring(key.length() + 1);
@@ -106,8 +105,8 @@ public class Oripyon_jr {
 					return probabilityControl(randomArray);
 				}
 			}
-        } catch (IOException e) {
-          e.printStackTrace();
+        }catch(IOException e){
+        	e.printStackTrace();
         }
         
         return null;
