@@ -54,7 +54,6 @@ public class Oripyon_jr {
 	@Autowired
 	private LineMessagingService lineMessagingService;
 	
-	int seed;
 	Random random = new Random();
 	
 	
@@ -103,7 +102,7 @@ public class Oripyon_jr {
 				}
 				String[] randomArray =  randomArrayCommand.get(key);
 				if(randomArray != null){
-					randomArray = probabilityControl(randomArray);
+					int seed = probabilityControl(randomArray);
 					
 					//將機率設定的字串從內容中切除
 					return randomArray[seed].split("%=")[0].trim();
@@ -117,7 +116,7 @@ public class Oripyon_jr {
     }
     
     //檢查RandomArray是否有機率設定並作相關處理
-    private String[] probabilityControl(String[] randomArray){
+    private int probabilityControl(String[] randomArray){
     	int withoutProbability = randomArray.length;
     	BigDecimal hundred = new BigDecimal(100);
     	double probabilityCount = 0;
@@ -135,8 +134,7 @@ public class Oripyon_jr {
     	
     	//機率總和大於100，不使用該array中的設定
     	if(probabilityCount > 100){
-    		seed = random.nextInt(randomArray.length);
-    		return randomArray;
+    		return random.nextInt(randomArray.length);
     	}
     	
     	//未設定機率之內容的出現機率 ＝ 100 - 有設定機率總和 / 未設定機率個數
@@ -145,7 +143,6 @@ public class Oripyon_jr {
     	
     	int scopeSeed = random.nextInt(10000) + 1;
     	int scope = 0;
-    	boolean checkDone = false;
     	
     	//將每一個內容各自的scope疊加直到值大於seed便輸出該Array index
     	for(int i=0;i<randomArray.length;i++){
@@ -156,17 +153,16 @@ public class Oripyon_jr {
     			generalProbability;
 			System.out.println("第" + i + "項" + scope);
     			
-    		if(scope >= scopeSeed && !checkDone){
+    		if(scope >= scopeSeed){
     			System.out.println(scope);
     			System.out.println(scopeSeed);
     			System.out.println(i);
     			System.out.println(randomArray[i]);
-    			seed = i;
-    			checkDone = true;
+    			return i;
     		}
     	}
     	
-    	return randomArray;
+    	return random.nextInt(randomArray.length);
     }
 	
 }
