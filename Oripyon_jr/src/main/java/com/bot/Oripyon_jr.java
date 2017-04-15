@@ -157,7 +157,8 @@ public class Oripyon_jr {
     		scope += stringValue.split("%=").length > 1 ?
     			new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN).multiply(hundred).intValue():
     			generalProbability;
-    		
+			System.out.println("第" + i + "項" + scope);
+    			
     		//將機率設定的字串從內容中切除
     		randomArray[i] = stringValue.split("%=")[0].trim();
     		
