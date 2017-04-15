@@ -103,7 +103,7 @@ public class Oripyon_jr {
 				}
 				String[] randomArray =  randomArrayCommand.get(key);
 				if(randomArray != null){
-					seed = probabilityControl(randomArray);
+					randomArray = probabilityControl(randomArray);
 					return randomArray[seed];
 				}
 			}
@@ -114,7 +114,8 @@ public class Oripyon_jr {
         return null;
     }
     
-    private int probabilityControl(String[] randomArray){
+    //檢查RandomArray是否有機率設定並作相關處理
+    private String[] probabilityControl(String[] randomArray){
     	int withoutProbability = randomArray.length;
     	BigDecimal hundred = new BigDecimal(100);
     	double probabilityCount = 0;
@@ -123,22 +124,29 @@ public class Oripyon_jr {
     	//迴圈取得有設定機率的總和及未設定機率的個數
     	for(String stringValue:randomArray){
     		if(stringValue.split("%=").length > 1){
-    			//吃進的參數只取道小數2位
+    			//吃進的機率參數只取到小數2位
     			probability = new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN);
     			probabilityCount += probability.doubleValue();
     			withoutProbability --;
     		}
     	}
     	
-    	//機率總和大於100，不使用
+    	//機率總和大於100，不使用該array中的設定
     	if(probabilityCount > 100){
-    		return random.nextInt(randomArray.length);
+    		for(int i=0;i<randomArray.length;i++){
+    			//將機率設定的字串從內容中切除
+        		randomArray[i] = randomArray[i].split("%=")[0].trim();
+    		}
+    		
+    		seed = random.nextInt(randomArray.length);
+    		return randomArray;
     	}
     	
     	//未設定機率之內容的出現機率 ＝ 100 - 有設定機率總和 / 未設定機率個數
+    	//算出之機率再乘以100將scope拉大為1-10000
     	int generalProbability = hundred.subtract(new BigDecimal(probabilityCount)).divide(new BigDecimal(withoutProbability), 2, BigDecimal.ROUND_HALF_UP).multiply(hundred).intValue(); 
     	
-    	seed = random.nextInt(10000) + 1;
+    	int scopeSeed = random.nextInt(10000) + 1;
     	int scope = 0;
     	
     	//將每一個內容各自的scope疊加直到值大於seed便輸出該Array index
@@ -152,12 +160,12 @@ public class Oripyon_jr {
     		//將機率設定的字串從內容中切除
     		randomArray[i] = stringValue.split("%=")[0].trim();
     		
-    		if(scope >= seed){
-    			return i;
+    		if(scope >= scopeSeed){
+    			seed = i;
     		}
     	}
     	
-    	return random.nextInt(randomArray.length);
+    	return randomArray;
     }
 	
 }
