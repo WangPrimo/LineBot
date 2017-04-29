@@ -1,7 +1,8 @@
 package com.bot.Enum;
 
 public enum MultiKeyMap {
-	早餐("food"),午餐("food"),晚餐("food"),下午茶("food"),宵夜("food");
+	早餐("food"),午餐("food"),晚餐("food"),下午茶("food"),宵夜("food"),點心("food"),
+	MOMO你說("momo你說");
 	
 	private String trueKey;
 	

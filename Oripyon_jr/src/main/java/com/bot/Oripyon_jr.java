@@ -82,7 +82,7 @@ public class Oripyon_jr {
     private String replyString(MessageEvent<TextMessageContent> event){
     	String message = event.getMessage().getText();
     	try {
-			if(message.startsWith("!")){
+			if(message.startsWith("!") || message.startsWith("！")){
 				String key = message.split(" ")[0].substring(1);
 				String target = message.substring(key.length() + 1);
 	
@@ -104,6 +104,10 @@ public class Oripyon_jr {
 				if(randomArray != null){
 					return probabilityControl(randomArray);
 				}
+			}
+			if(message.equalsIgnoreCase("/roll")){
+				int score = random.nextInt(100) + 1;
+				return "你擲出了" + score + "點!";
 			}
         }catch(IOException e){
         	e.printStackTrace();
