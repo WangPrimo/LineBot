@@ -107,7 +107,7 @@ public class Oripyon_jr {
 			}
 			if(message.equalsIgnoreCase("/roll")){
 				int score = random.nextInt(100) + 1;
-				return "你擲出了" + score + "點( 1 ~ 100 )";
+				return "你擲出了" + score + "點(1-100)";
 			}
         }catch(IOException e){
         	e.printStackTrace();
