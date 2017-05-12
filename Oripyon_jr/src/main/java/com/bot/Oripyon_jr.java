@@ -2,6 +2,8 @@ package com.bot;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.Random;
 
@@ -118,19 +120,11 @@ public class Oripyon_jr {
     
     //檢查RandomArray是否有機率設定並作相關處理
     private String probabilityControl(String[] randomArray){
-    	int withoutProbability = randomArray.length;
-    	double probabilityCount = 0;
-    	BigDecimal probability;
+    	//統計有設定機率的選項
+    	DoubleSummaryStatistics statistics = Arrays.asList(randomArray).stream().filter(v -> v.split("%=").length > 1).mapToDouble(v -> Double.valueOf(v.split("%=")[1])).summaryStatistics();
+    	double probabilityCount = new BigDecimal(statistics.getSum()).setScale(2, BigDecimal.ROUND_DOWN).doubleValue();
+    	int withoutProbability = randomArray.length - (int)statistics.getCount();
     	
-    	//迴圈取得有設定機率的總和及未設定機率的個數
-    	for(String stringValue:randomArray){
-    		if(stringValue.split("%=").length > 1){
-    			//吃進的機率參數只取到小數2位
-    			probability = new BigDecimal(stringValue.split("%=")[1]).setScale(2, BigDecimal.ROUND_DOWN);
-    			probabilityCount += probability.doubleValue();
-    			withoutProbability--;
-    		}
-    	}
     	
     	//機率總和大於100或等於0，直接隨機輸出陣列內容
     	if(probabilityCount > 100 || probabilityCount == 0){
