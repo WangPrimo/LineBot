@@ -97,7 +97,13 @@ public class Oripyon_jr {
 						return unaryCommand.get(key).replace("{}", sender.getDisplayName());
 					}
 				}
-	
+				else
+				{
+					if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+						return binaryCommand.get(key).replace("@{}", target).replace("{}", "草泥馬先生");
+					}
+				}
+				
 				//key取不到value則檢查是否為multikey
 				if(randomArrayCommand.get(key) == null){
 					key = MultiKeyMap.getTrueKey(key);
