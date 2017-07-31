@@ -88,14 +88,19 @@ public class Oripyon_jr {
 				String key = message.split(" ")[0].substring(1);
 				String target = message.substring(key.length() + 1);
 	
+				UserProfileResponse sender = null;
 				if(event.getSource().getUserId() != null){
-					UserProfileResponse sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
-					if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
-						return binaryCommand.get(key).replace("@{}", target).replace("{}", sender.getDisplayName());
-					}
-					if(unaryCommand.get(key) != null){
-						return unaryCommand.get(key).replace("{}", sender.getDisplayName());
-					}
+					 sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
+				}
+				
+				//有sender使用sender，否則使用草泥馬作為指令中發起動作的人
+				if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
+					String senderName = sender == null ? "草泥馬先生" : sender.getDisplayName();
+					return binaryCommand.get(key).replace("@{}", target).replace("{}", senderName);
+				}
+				//有sender資料才使用unaryCommand
+				if(unaryCommand.get(key) != null && sender != null){
+					return unaryCommand.get(key).replace("{}", sender.getDisplayName());
 				}
 	
 				//key取不到value則檢查是否為multikey
