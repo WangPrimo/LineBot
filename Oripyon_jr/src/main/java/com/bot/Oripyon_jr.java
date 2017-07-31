@@ -2,9 +2,11 @@ package com.bot;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +14,20 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.StringUtils;
 
+import com.bot.Enum.CommandHelp;
 import com.bot.Enum.MultiKeyMap;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingService;
+import com.linecorp.bot.model.action.Action;
+import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.Message;
+import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
@@ -155,6 +161,17 @@ public class Oripyon_jr {
     	}
     	
     	return randomArray[random.nextInt(randomArray.length)].split("%=")[0].trim();
+    }
+    
+    private Message getCommandHelp(String command){
+    	//TODO
+    	List<Action> actions = new ArrayList<>();
+    	for(CommandHelp commandHelp:CommandHelp.values()){
+    		String actionCommand = "";
+    		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "告訴我關於" + commandHelp.chineseCommand + "的指令吧 ლ(◉◞౪◟◉ )ლ"));
+    	}
+    	 
+    	return null;
     }
 	
 }
