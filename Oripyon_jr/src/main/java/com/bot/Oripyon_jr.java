@@ -167,7 +167,7 @@ public class Oripyon_jr {
     	//TODO
     	List<Action> actions = new ArrayList<>();
     	for(CommandHelp commandHelp:CommandHelp.values()){
-    		String actionCommand = "";
+    		String actionCommand = "!command " + commandHelp.name();
     		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "告訴我關於" + commandHelp.chineseCommand + "的指令吧 ლ(◉◞౪◟◉ )ლ"));
     	}
     	 
