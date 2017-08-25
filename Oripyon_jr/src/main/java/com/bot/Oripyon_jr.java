@@ -197,7 +197,7 @@ public class Oripyon_jr {
 			        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的內容吧 (ﾟ∀ﾟ )"));
 			        	}
 			        	
-			        	String imgpath = "https://drive.google.com/open?id=0B_Am1wVVEKB9cHhyN2hpZzBlMGc";
+			        	String imgpath = "https://drive.google.com/open?id=0B_Am1wVVEKB9WmFBVVM5UmdWTlE";
 			        	String title = "草泥馬指令助手";
 			        	String text = "想知道什麼呢（·´ｪ`·）?";
 			        	ButtonsTemplate buttonsTemplate = new ButtonsTemplate(imgpath, title, text, actions);
