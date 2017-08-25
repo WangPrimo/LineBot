@@ -96,7 +96,7 @@ public class Oripyon_jr {
     @EventMapping
     public Message handlePostbackEvent(PostbackEvent event){
     	String command = event.getPostbackContent().getData();
-//    	String senderId = event.getSource().getUserId();
+    	System.out.println(command);
     	
     	Message message = null;
     	message = getCommandHelp(command);
@@ -107,11 +107,6 @@ public class Oripyon_jr {
     	return null;
     }
 
-    @EventMapping
-    public void handleDefaultMessageEvent(Event event) {
-        System.out.println("event: " + event);
-    }
-    
     private TextMessage replyString(String command, String senderId){
     	try {
 			if(command.startsWith("!") || command.startsWith("！")){
@@ -190,8 +185,8 @@ public class Oripyon_jr {
     @SuppressWarnings("unchecked")
 	private Message getCommandHelp(String command){
     	try {
+    		System.out.println("In CommandHelp!");
 	    	String[] callCommandHelp = {"command", "指令"};
-//	    	String message = event.getMessage().getText();
 
 	    	if(command.startsWith("!") || command.startsWith("！")){
 	    		String key = command.split(" ")[0].substring(1);
