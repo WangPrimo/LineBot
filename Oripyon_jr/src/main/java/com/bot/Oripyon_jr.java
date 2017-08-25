@@ -190,7 +190,7 @@ public class Oripyon_jr {
 
 	    	if(command.startsWith("!") || command.startsWith("！")){
 	    		String key = command.split(" ")[0].substring(1);
-				String target = command.substring(key.length() + 1);
+				String target = command.substring(key.length() + 1).trim();
 				System.out.println("key = " + key);
 				System.out.println("target = " + target);
 	    		
@@ -210,9 +210,6 @@ public class Oripyon_jr {
 			        	
 			        	return new TemplateMessage(title, buttonsTemplate);
 					}else{
-						for(int i=0;i<target.length();i++){
-							System.out.println(i + " = " + target.substring(i, i+1));
-						}
 						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
 						System.out.println(commandHelp);
 						if(commandHelp != null){
