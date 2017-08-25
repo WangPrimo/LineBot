@@ -210,6 +210,9 @@ public class Oripyon_jr {
 			        	
 			        	return new TemplateMessage(title, buttonsTemplate);
 					}else{
+						for(int i=0;i<target.length();i++){
+							System.out.println(i + " = " + target.substring(i, i+1));
+						}
 						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
 						System.out.println(commandHelp);
 						if(commandHelp != null){
