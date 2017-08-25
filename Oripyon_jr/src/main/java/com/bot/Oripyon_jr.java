@@ -95,12 +95,10 @@ public class Oripyon_jr {
     @EventMapping
     public Message handlePostbackEvent(PostbackEvent event){
     	String command = event.getPostbackContent().getData();
-    	System.out.println(command);
     	
     	Message message = null;
     	message = getCommandHelp(command);
         if(message != null){
-        	System.out.println(message);
         	return message;
         }
         
@@ -185,17 +183,13 @@ public class Oripyon_jr {
     @SuppressWarnings("unchecked")
 	private Message getCommandHelp(String command){
     	try {
-    		System.out.println("In CommandHelp!");
 	    	String[] callCommandHelp = {"command", "指令"};
 
 	    	if(command.startsWith("!") || command.startsWith("！")){
 	    		String key = command.split(" ")[0].substring(1);
 				String target = command.substring(key.length() + 1).trim();
-				System.out.println("key = " + key);
-				System.out.println("target = " + target);
 	    		
 				if(Arrays.asList(callCommandHelp).contains(key)){
-					System.out.println("StringUtils.isEmpty(target) = " + StringUtils.isEmpty(target));
 					if(StringUtils.isEmpty(target)){
 						List<Action> actions = new ArrayList<>();
 			        	for(CommandHelp commandHelp:CommandHelp.values()){
@@ -211,16 +205,15 @@ public class Oripyon_jr {
 			        	return new TemplateMessage(title, buttonsTemplate);
 					}else{
 						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
-						System.out.println(commandHelp);
 						if(commandHelp != null){
-							Field field= Oripyon_jr.class.getDeclaredField(commandHelp.name());
+							Field field= Oripyon_jr.class.getDeclaredField(commandHelp.toString());
 							StringBuffer sb = new StringBuffer();
-							sb.append(commandHelp.chineseCommand + Change_Line);
-							sb.append(commandHelp.description + Change_Line);
+							sb.append(commandHelp.chineseCommand).append(Change_Line);
+							sb.append("說明：").append(commandHelp.description).append(Change_Line).append(Change_Line);
+							sb.append("指令如下：").append(Change_Line);
 							for(String commandKey:((HashMap<String, Object>)field.get(this)).keySet()){
 								sb.append(commandKey + Change_Line);
 							}
-							System.out.println(sb.toString());
 							return new TextMessage(sb.toString());
 						}
 					}
