@@ -44,7 +44,6 @@ public class Oripyon_jr {
 	static HashMap<String, String[]> randomArrayCommand;
 	static HashMap<String, String> binaryCommand;
 	static HashMap<String, String> unaryCommand;
-	static Field[] commandField;
 	
 	static{
 		try {
@@ -55,7 +54,6 @@ public class Oripyon_jr {
 			binaryCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/binary.json"), typeMapString);
 			unaryCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/unary.json"), typeMapString);
 			randomArrayCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/randomArray.json"), typeMapArray);
-			commandField = Oripyon_jr.class.getDeclaredFields();
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -175,46 +173,53 @@ public class Oripyon_jr {
     
     @SuppressWarnings("unchecked")
 	private Message getCommandHelp(MessageEvent<TextMessageContent> event){
-    	String[] callCommandHelp = {"command", "指令"};
-    	String message = event.getMessage().getText();
+    	try {
+	    	String[] callCommandHelp = {"command", "指令"};
+	    	String message = event.getMessage().getText();
 
-    	if(message.startsWith("!") || message.startsWith("！")){
-    		String key = message.split(" ")[0].substring(1);
-			String target = message.substring(key.length() + 1);
-    		
-			if(Arrays.asList(callCommandHelp).contains(key)){
-				if(StringUtils.isEmpty(target)){
-					List<Action> actions = new ArrayList<>();
-		        	for(CommandHelp commandHelp:CommandHelp.values()){
-		        		String actionCommand = "!command " + commandHelp.name();
-		        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的指令吧 (ﾟ∀ﾟ )"));
-		        	}
-		        	
-		        	String imgpath = null;
-		        	String title = "草泥馬指令助手";
-		        	String text = "想知道什麼呢（·´ｪ`·）?";
-		        	ButtonsTemplate buttonsTemplate = new ButtonsTemplate(imgpath, title, text, actions);
-		        	
-		        	return new TemplateMessage(title, buttonsTemplate);
-				}else{
-					CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
-					
-					if(commandHelp != null){
-						for(Field field:commandField){
-							if(commandHelp.name().equals(field.getName())){
-								StringBuffer sb = new StringBuffer();
-								sb.append(commandHelp.chineseCommand + Change_Line);
-								sb.append(commandHelp.discription + Change_Line);
-								for(String commandKey:((HashMap<String, Object>)field.getGenericType()).keySet()){
-									sb.append(commandKey + Change_Line);
-								}
-								return new TextMessage(sb.toString());
+	    	if(message.startsWith("!") || message.startsWith("！")){
+	    		String key = message.split(" ")[0].substring(1);
+				String target = message.substring(key.length() + 1);
+	    		
+				if(Arrays.asList(callCommandHelp).contains(key)){
+					if(StringUtils.isEmpty(target)){
+						List<Action> actions = new ArrayList<>();
+			        	for(CommandHelp commandHelp:CommandHelp.values()){
+			        		String actionCommand = "!command " + commandHelp.name();
+			        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的內容吧 (ﾟ∀ﾟ )"));
+			        	}
+			        	
+			        	String imgpath = null;
+			        	String title = "草泥馬指令助手";
+			        	String text = "想知道什麼呢（·´ｪ`·）?";
+			        	ButtonsTemplate buttonsTemplate = new ButtonsTemplate(imgpath, title, text, actions);
+			        	
+			        	return new TemplateMessage(title, buttonsTemplate);
+					}else{
+						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
+						
+						if(commandHelp != null){
+							Field field= this.getClass().getField(commandHelp.name());
+							StringBuffer sb = new StringBuffer();
+							sb.append(commandHelp.chineseCommand + Change_Line);
+							sb.append(commandHelp.discription + Change_Line);
+							for(String commandKey:((HashMap<String, Object>)field.get(this)).keySet()){
+								sb.append(commandKey + Change_Line);
 							}
+							return new TextMessage(sb.toString());
 						}
 					}
 				}
-			}
-    	}
+	    	}
+    	} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
     	return null;
     }
 	
