@@ -100,6 +100,7 @@ public class Oripyon_jr {
     	Message message = null;
     	message = getCommandHelp(command);
         if(message != null){
+        	System.out.println(message);
         	return message;
         }
         
@@ -210,7 +211,7 @@ public class Oripyon_jr {
 			        	return new TemplateMessage(title, buttonsTemplate);
 					}else{
 						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
-						System.out.println("commandHelp != null = " + commandHelp != null);
+						
 						if(commandHelp != null){
 							Field field= this.getClass().getField(commandHelp.name());
 							StringBuffer sb = new StringBuffer();
@@ -219,6 +220,7 @@ public class Oripyon_jr {
 							for(String commandKey:((HashMap<String, Object>)field.get(this)).keySet()){
 								sb.append(commandKey + Change_Line);
 							}
+							System.out.println(sb.toString());
 							return new TextMessage(sb.toString());
 						}
 					}
