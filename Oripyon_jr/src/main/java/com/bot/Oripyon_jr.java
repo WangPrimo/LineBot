@@ -26,6 +26,7 @@ import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.PostbackAction;
 import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
+import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
@@ -76,18 +77,34 @@ public class Oripyon_jr {
 
     @EventMapping
     public Message handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    	String command = event.getMessage().getText();
+    	String senderId = event.getSource().getUserId();
     	Message message = null;
     	
-    	message = replyString(event);
+    	message = replyString(command, senderId);
         if(message != null){
         	return message;
         }
-        message = getCommandHelp(event);
+        message = getCommandHelp(command);
         if(message != null){
         	return message;
         }
         
         return null;
+    }
+    
+    @EventMapping
+    public Message handlePostbackEvent(PostbackEvent event){
+    	String command = event.getPostbackContent().getData();
+//    	String senderId = event.getSource().getUserId();
+    	
+    	Message message = null;
+    	message = getCommandHelp(command);
+        if(message != null){
+        	return message;
+        }
+        
+    	return null;
     }
 
     @EventMapping
@@ -95,16 +112,15 @@ public class Oripyon_jr {
         System.out.println("event: " + event);
     }
     
-    private TextMessage replyString(MessageEvent<TextMessageContent> event){
-    	String message = event.getMessage().getText();
+    private TextMessage replyString(String command, String senderId){
     	try {
-			if(message.startsWith("!") || message.startsWith("！")){
-				String key = message.split(" ")[0].substring(1);
-				String target = message.substring(key.length() + 1);
+			if(command.startsWith("!") || command.startsWith("！")){
+				String key = command.split(" ")[0].substring(1);
+				String target = command.substring(key.length() + 1);
 	
 				UserProfileResponse sender = null;
-				if(event.getSource().getUserId() != null){
-					 sender = lineMessagingService.getProfile(event.getSource().getUserId()).execute().body();
+				if(!StringUtils.isEmpty(senderId)){
+					 sender = lineMessagingService.getProfile(senderId).execute().body();
 				}
 				
 				//有sender使用sender，否則使用草泥馬作為指令中發起動作的人
@@ -126,7 +142,7 @@ public class Oripyon_jr {
 					return new TextMessage(probabilityControl(randomArray));
 				}
 			}
-			if(message.equalsIgnoreCase("/roll")){
+			if(command.equalsIgnoreCase("/roll")){
 				int score = random.nextInt(100) + 1;
 				return new TextMessage("你擲出了" + score + "點(1-100)");
 			}
@@ -172,14 +188,14 @@ public class Oripyon_jr {
     }
     
     @SuppressWarnings("unchecked")
-	private Message getCommandHelp(MessageEvent<TextMessageContent> event){
+	private Message getCommandHelp(String command){
     	try {
 	    	String[] callCommandHelp = {"command", "指令"};
-	    	String message = event.getMessage().getText();
+//	    	String message = event.getMessage().getText();
 
-	    	if(message.startsWith("!") || message.startsWith("！")){
-	    		String key = message.split(" ")[0].substring(1);
-				String target = message.substring(key.length() + 1);
+	    	if(command.startsWith("!") || command.startsWith("！")){
+	    		String key = command.split(" ")[0].substring(1);
+				String target = command.substring(key.length() + 1);
 	    		
 				if(Arrays.asList(callCommandHelp).contains(key)){
 					if(StringUtils.isEmpty(target)){
