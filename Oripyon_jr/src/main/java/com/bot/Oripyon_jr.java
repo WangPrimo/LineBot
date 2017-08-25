@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.linecorp.bot.client.LineMessagingService;
 import com.linecorp.bot.model.action.Action;
 import com.linecorp.bot.model.action.PostbackAction;
-import com.linecorp.bot.model.event.Event;
 import com.linecorp.bot.model.event.MessageEvent;
 import com.linecorp.bot.model.event.PostbackEvent;
 import com.linecorp.bot.model.event.message.TextMessageContent;
@@ -191,8 +190,11 @@ public class Oripyon_jr {
 	    	if(command.startsWith("!") || command.startsWith("！")){
 	    		String key = command.split(" ")[0].substring(1);
 				String target = command.substring(key.length() + 1);
+				System.out.println("key = " + key);
+				System.out.println("target = " + target);
 	    		
 				if(Arrays.asList(callCommandHelp).contains(key)){
+					System.out.println("StringUtils.isEmpty(target) = " + StringUtils.isEmpty(target));
 					if(StringUtils.isEmpty(target)){
 						List<Action> actions = new ArrayList<>();
 			        	for(CommandHelp commandHelp:CommandHelp.values()){
@@ -213,7 +215,7 @@ public class Oripyon_jr {
 							Field field= this.getClass().getField(commandHelp.name());
 							StringBuffer sb = new StringBuffer();
 							sb.append(commandHelp.chineseCommand + Change_Line);
-							sb.append(commandHelp.discription + Change_Line);
+							sb.append(commandHelp.description + Change_Line);
 							for(String commandKey:((HashMap<String, Object>)field.get(this)).keySet()){
 								sb.append(commandKey + Change_Line);
 							}

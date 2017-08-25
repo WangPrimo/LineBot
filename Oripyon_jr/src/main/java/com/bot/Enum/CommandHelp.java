@@ -7,11 +7,11 @@ public enum CommandHelp {
 	unaryCommand("動作指令", "發話者自己執行指令的動作，需授權給機器人取用資料的權限才能使用");
 	
 	public String chineseCommand;
-	public String discription;
+	public String description;
 	
-	private CommandHelp(String chineseCommand, String discription){
+	private CommandHelp(String chineseCommand, String description){
 		this.chineseCommand = chineseCommand;
-		this.discription = discription;
+		this.description = description;
 		
 	}
 	
