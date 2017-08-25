@@ -1,6 +1,7 @@
 package com.bot;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import com.linecorp.bot.model.event.message.TextMessageContent;
 import com.linecorp.bot.model.message.Message;
 import com.linecorp.bot.model.message.TemplateMessage;
 import com.linecorp.bot.model.message.TextMessage;
+import com.linecorp.bot.model.message.template.ButtonsTemplate;
 import com.linecorp.bot.model.profile.UserProfileResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
@@ -37,9 +39,12 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 @LineMessageHandler
 public class Oripyon_jr {
 	
+	private final String Change_Line = "\r\n";
+	
 	static HashMap<String, String[]> randomArrayCommand;
 	static HashMap<String, String> binaryCommand;
 	static HashMap<String, String> unaryCommand;
+	static Field[] commandField;
 	
 	static{
 		try {
@@ -50,6 +55,7 @@ public class Oripyon_jr {
 			binaryCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/binary.json"), typeMapString);
 			unaryCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/unary.json"), typeMapString);
 			randomArrayCommand = mapper.readValue(Oripyon_jr.class.getResourceAsStream("/command/randomArray.json"), typeMapArray);
+			commandField = Oripyon_jr.class.getDeclaredFields();
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
@@ -72,11 +78,15 @@ public class Oripyon_jr {
 
     @EventMapping
     public Message handleTextMessageEvent(MessageEvent<TextMessageContent> event) {
+    	Message message = null;
     	
-        String stringMessage = replyString(event);
-        
-        if(!StringUtils.isEmpty(stringMessage)){
-        	return new TextMessage(stringMessage);
+    	message = replyString(event);
+        if(message != null){
+        	return message;
+        }
+        message = getCommandHelp(event);
+        if(message != null){
+        	return message;
         }
         
         return null;
@@ -87,7 +97,7 @@ public class Oripyon_jr {
         System.out.println("event: " + event);
     }
     
-    private String replyString(MessageEvent<TextMessageContent> event){
+    private TextMessage replyString(MessageEvent<TextMessageContent> event){
     	String message = event.getMessage().getText();
     	try {
 			if(message.startsWith("!") || message.startsWith("！")){
@@ -102,11 +112,11 @@ public class Oripyon_jr {
 				//有sender使用sender，否則使用草泥馬作為指令中發起動作的人
 				if(binaryCommand.get(key) != null && !StringUtils.isEmpty(target)){
 					String senderName = sender == null ? "草泥馬先生" : sender.getDisplayName();
-					return binaryCommand.get(key).replace("@{}", target).replace("{}", senderName);
+					return new TextMessage(binaryCommand.get(key).replace("@{}", target).replace("{}", senderName));
 				}
 				//有sender資料才使用unaryCommand
 				if(unaryCommand.get(key) != null && sender != null){
-					return unaryCommand.get(key).replace("{}", sender.getDisplayName());
+					return new TextMessage(unaryCommand.get(key).replace("{}", sender.getDisplayName()));
 				}
 	
 				//key取不到value則檢查是否為multikey
@@ -115,12 +125,12 @@ public class Oripyon_jr {
 				}
 				String[] randomArray =  randomArrayCommand.get(key);
 				if(randomArray != null){
-					return probabilityControl(randomArray);
+					return new TextMessage(probabilityControl(randomArray));
 				}
 			}
 			if(message.equalsIgnoreCase("/roll")){
 				int score = random.nextInt(100) + 1;
-				return "你擲出了" + score + "點(1-100)";
+				return new TextMessage("你擲出了" + score + "點(1-100)");
 			}
         }catch(IOException e){
         	e.printStackTrace();
@@ -163,14 +173,48 @@ public class Oripyon_jr {
     	return randomArray[random.nextInt(randomArray.length)].split("%=")[0].trim();
     }
     
-    private Message getCommandHelp(String command){
-    	//TODO
-    	List<Action> actions = new ArrayList<>();
-    	for(CommandHelp commandHelp:CommandHelp.values()){
-    		String actionCommand = "!command " + commandHelp.name();
-    		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "告訴我關於" + commandHelp.chineseCommand + "的指令吧 ლ(◉◞౪◟◉ )ლ"));
+    @SuppressWarnings("unchecked")
+	private Message getCommandHelp(MessageEvent<TextMessageContent> event){
+    	String[] callCommandHelp = {"command", "指令"};
+    	String message = event.getMessage().getText();
+
+    	if(message.startsWith("!") || message.startsWith("！")){
+    		String key = message.split(" ")[0].substring(1);
+			String target = message.substring(key.length() + 1);
+    		
+			if(Arrays.asList(callCommandHelp).contains(key)){
+				if(StringUtils.isEmpty(target)){
+					List<Action> actions = new ArrayList<>();
+		        	for(CommandHelp commandHelp:CommandHelp.values()){
+		        		String actionCommand = "!command " + commandHelp.name();
+		        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的指令吧 (ﾟ∀ﾟ )"));
+		        	}
+		        	
+		        	String imgpath = null;
+		        	String title = "草泥馬指令助手";
+		        	String text = "想知道什麼呢（·´ｪ`·）?";
+		        	ButtonsTemplate buttonsTemplate = new ButtonsTemplate(imgpath, title, text, actions);
+		        	
+		        	return new TemplateMessage(title, buttonsTemplate);
+				}else{
+					CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
+					
+					if(commandHelp != null){
+						for(Field field:commandField){
+							if(commandHelp.name().equals(field.getName())){
+								StringBuffer sb = new StringBuffer();
+								sb.append(commandHelp.chineseCommand + Change_Line);
+								sb.append(commandHelp.discription + Change_Line);
+								for(String commandKey:((HashMap<String, Object>)field.getGenericType()).keySet()){
+									sb.append(commandKey + Change_Line);
+								}
+								return new TextMessage(sb.toString());
+							}
+						}
+					}
+				}
+			}
     	}
-    	 
     	return null;
     }
 	
