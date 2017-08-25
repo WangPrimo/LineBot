@@ -213,7 +213,9 @@ public class Oripyon_jr {
 						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
 						System.out.println(commandHelp);
 						if(commandHelp != null){
-							Field field= this.getClass().getDeclaredField(commandHelp.toString());
+							Field 
+							field = this.getClass().getDeclaredField(target);
+							field= this.getClass().getDeclaredField(commandHelp.name());
 							StringBuffer sb = new StringBuffer();
 							sb.append(commandHelp.chineseCommand + Change_Line);
 							sb.append(commandHelp.description + Change_Line);
