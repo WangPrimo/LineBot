@@ -197,7 +197,7 @@ public class Oripyon_jr {
 			        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的內容吧 (ﾟ∀ﾟ )"));
 			        	}
 			        	
-			        	String imgpath = "https://github.com/WangPrimo/LineBot/tree/develop/Oripyon_jr/src/main/resources/images/alpaca.png";
+			        	String imgpath = "https://raw.githubusercontent.com/WangPrimo/LineBot/develop/Oripyon_jr/src/main/resources/images/alpaca.png";
 			        	String title = "草泥馬指令助手";
 			        	String text = "想知道什麼呢（·´ｪ`·）?";
 			        	ButtonsTemplate buttonsTemplate = new ButtonsTemplate(imgpath, title, text, actions);
