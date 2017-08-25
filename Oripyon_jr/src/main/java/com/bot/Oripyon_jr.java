@@ -199,7 +199,7 @@ public class Oripyon_jr {
 					if(StringUtils.isEmpty(target)){
 						List<Action> actions = new ArrayList<>();
 			        	for(CommandHelp commandHelp:CommandHelp.values()){
-			        		String actionCommand = "!command ".concat(commandHelp.name());
+			        		String actionCommand = "!command ".concat(commandHelp.toString());
 			        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的內容吧 (ﾟ∀ﾟ )"));
 			        	}
 			        	
@@ -213,7 +213,7 @@ public class Oripyon_jr {
 						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
 						System.out.println(commandHelp);
 						if(commandHelp != null){
-							Field field= this.getClass().getField(commandHelp.name());
+							Field field= this.getClass().getField(commandHelp.toString());
 							StringBuffer sb = new StringBuffer();
 							sb.append(commandHelp.chineseCommand + Change_Line);
 							sb.append(commandHelp.description + Change_Line);
