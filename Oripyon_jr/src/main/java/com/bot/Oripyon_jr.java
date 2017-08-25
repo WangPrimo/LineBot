@@ -189,7 +189,7 @@ public class Oripyon_jr {
 
 	    	if(command.startsWith("!") || command.startsWith("！")){
 	    		String key = command.split(" ")[0].substring(1);
-				String target = command.substring(key.length() + 1);
+				String target = command.substring(key.length() + 1).trim();
 				System.out.println("key = " + key);
 				System.out.println("target = " + target);
 	    		
@@ -202,7 +202,7 @@ public class Oripyon_jr {
 			        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的內容吧 (ﾟ∀ﾟ )"));
 			        	}
 			        	
-			        	String imgpath = null;
+			        	String imgpath = Oripyon_jr.class.getResource("/images/Alpaca.jpg").toString();
 			        	String title = "草泥馬指令助手";
 			        	String text = "想知道什麼呢（·´ｪ`·）?";
 			        	ButtonsTemplate buttonsTemplate = new ButtonsTemplate(imgpath, title, text, actions);
@@ -210,7 +210,7 @@ public class Oripyon_jr {
 			        	return new TemplateMessage(title, buttonsTemplate);
 					}else{
 						CommandHelp commandHelp = CommandHelp.getCommandHelp(target);
-						
+						System.out.println("commandHelp != null = " + commandHelp != null);
 						if(commandHelp != null){
 							Field field= this.getClass().getField(commandHelp.name());
 							StringBuffer sb = new StringBuffer();
