@@ -188,7 +188,7 @@ public class Oripyon_jr {
 	    	String[] callCommandHelp = {"command", "指令"};
 
 	    	if(command.startsWith("!") || command.startsWith("！")){
-	    		String key = command.split("|")[0].substring(1);
+	    		String key = command.split(" ")[0].substring(1);
 				String target = command.substring(key.length() + 1);
 				System.out.println("key = " + key);
 				System.out.println("target = " + target);
@@ -198,7 +198,7 @@ public class Oripyon_jr {
 					if(StringUtils.isEmpty(target)){
 						List<Action> actions = new ArrayList<>();
 			        	for(CommandHelp commandHelp:CommandHelp.values()){
-			        		String actionCommand = "!command|" + commandHelp.name();
+			        		String actionCommand = "!command ".concat(commandHelp.name());
 			        		actions.add(new PostbackAction(commandHelp.chineseCommand, actionCommand, "說說關於" + commandHelp.chineseCommand + "的內容吧 (ﾟ∀ﾟ )"));
 			        	}
 			        	
